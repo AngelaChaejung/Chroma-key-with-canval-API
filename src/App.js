@@ -1,6 +1,8 @@
 import "./App.css";
 import React, { useRef } from "react";
 
+import VideoProcessor from "./Test";
+
 function App() {
   const canvasRef = useRef(null);
 
@@ -68,6 +70,7 @@ function App() {
   return (
     <div>
       <canvas ref={canvasRef} width={800} height={600} />
+      <VideoProcessor />
     </div>
   );
 }
