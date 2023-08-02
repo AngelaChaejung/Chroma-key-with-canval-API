@@ -7,6 +7,8 @@ const VideoProcessor = () => {
   const c1Ref = useRef(null);
   const c2Ref = useRef(null);
 
+  const backgrounds = ["/image/배경.jpg", "/image/bg.png"];
+  const [selectedBackground, setSelectedBackground] = React.useState(0);
   useEffect(() => {
     // Get user media (webcam stream)
     navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
@@ -52,14 +54,17 @@ const VideoProcessor = () => {
       });
     };
   }, []);
-
+  console.log(backgrounds[selectedBackground]);
   return (
     <div>
-      <video id="video" ref={videoRef} autoPlay controls crossOrigin="anonymous"></video>
+      <video id="video" ref={videoRef} autoPlay controls crossOrigin="anonymous" style={{ display: "none" }}></video>
+      <button onClick={() => setSelectedBackground(0)}>분홍색 배경</button>
+      <button onClick={() => setSelectedBackground(1)}>바다 배경</button>
+      {/* <img src="/image/배경.jpg" alt=""></img> */}
       <div>
         <canvas id="c1" ref={c1Ref} width="400" height="300" style={{ display: "none" }}></canvas>
         <StContainer>
-          <StBgImg> </StBgImg>
+          <StBgImg style={{ backgroundImage: `url(${backgrounds[selectedBackground]})` }} />
           <StCanvas id="c2" ref={c2Ref} width="400" height="300"></StCanvas>
         </StContainer>
       </div>
@@ -73,7 +78,6 @@ const StBgImg = styled.div`
   position: absolute;
   width: 400px;
   height: 300px;
-  background-image: url("https://as2.ftcdn.net/v2/jpg/02/73/70/73/1000_F_273707368_pkdLW0q5RK1IKGLEKyvmi7FU8Ccw4cok.jpg");
   background-size: cover;
   z-index: 1;
 `;
