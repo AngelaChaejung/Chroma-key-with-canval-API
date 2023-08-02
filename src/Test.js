@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import "./App.css"; // You can create a separate CSS file for styling or include styles directly in the component using styled-components, etc.
+import { styled } from "styled-components";
 
 const VideoProcessor = () => {
   const videoRef = useRef(null);
@@ -56,11 +57,33 @@ const VideoProcessor = () => {
     <div>
       <video id="video" ref={videoRef} autoPlay controls crossOrigin="anonymous"></video>
       <div>
-        <canvas id="c1" ref={c1Ref} width="160" height="96"></canvas>
-        <canvas id="c2" ref={c2Ref} width="160" height="96"></canvas>
+        <canvas id="c1" ref={c1Ref} width="400" height="300" style={{ display: "none" }}></canvas>
+        <StContainer>
+          <StBgImg> </StBgImg>
+          <StCanvas id="c2" ref={c2Ref} width="400" height="300"></StCanvas>
+        </StContainer>
       </div>
     </div>
   );
 };
 
 export default VideoProcessor;
+
+const StBgImg = styled.div`
+  position: absolute;
+  width: 400px;
+  height: 300px;
+  background-image: url("https://as2.ftcdn.net/v2/jpg/02/73/70/73/1000_F_273707368_pkdLW0q5RK1IKGLEKyvmi7FU8Ccw4cok.jpg");
+  background-size: cover;
+  z-index: 1;
+`;
+const StContainer = styled.div`
+  width: 400px;
+  height: 300px;
+`;
+const StCanvas = styled.canvas`
+  position: absolute;
+  z-index: 2;
+  width: 400px;
+  height: 300px;
+`;
