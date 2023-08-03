@@ -30,23 +30,23 @@ function App() {
   //       const data = imageData.data;
 
   //       // 특정 색상(초록색)을 제거합니다.
-  //       const chromaKeyColor = [27, 178, 10]; // 크로마키 색상 (RGB 값 27, 178, 10)
-  //       const tolerance = 60; // 허용 오차 범위
+  // const chromaKeyColor = [27, 178, 10]; // 크로마키 색상 (RGB 값 27, 178, 10)
+  // const tolerance = 60; // 허용 오차 범위
 
-  //       for (let i = 0; i < data.length; i += 4) {
-  //         const red = data[i];
-  //         const green = data[i + 1];
-  //         const blue = data[i + 2];
+  // for (let i = 0; i < data.length; i += 4) {
+  //   const red = data[i];
+  //   const green = data[i + 1];
+  //   const blue = data[i + 2];
 
-  //         // 특정 범위 내의 색상(초록색)은 투명하게 처리합니다.
-  //         if (
-  //           Math.abs(red - chromaKeyColor[0]) < tolerance &&
-  //           Math.abs(green - chromaKeyColor[1]) < tolerance &&
-  //           Math.abs(blue - chromaKeyColor[2]) < tolerance
-  //         ) {
-  //           data[i + 3] = 0; // 투명화 처리
-  //         }
-  //       }
+  //   // 특정 범위 내의 색상(초록색)은 투명하게 처리합니다.
+  //   if (
+  //     Math.abs(red - chromaKeyColor[0]) < tolerance &&
+  //     Math.abs(green - chromaKeyColor[1]) < tolerance &&
+  //     Math.abs(blue - chromaKeyColor[2]) < tolerance
+  //   ) {
+  //     data[i + 3] = 0; // 투명화 처리
+  //   }
+  // }
 
   //       // 변경된 이미지 데이터를 canvas에 다시 그립니다.
   //       context.putImageData(imageData, 0, 0);
