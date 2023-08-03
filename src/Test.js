@@ -1,14 +1,73 @@
 import React, { useEffect, useRef } from "react";
-import "./App.css"; // You can create a separate CSS file for styling or include styles directly in the component using styled-components, etc.
 import { styled } from "styled-components";
 
 const VideoProcessor = () => {
   const videoRef = useRef(null);
   const c1Ref = useRef(null);
   const c2Ref = useRef(null);
+  const canvasStreamRef = useRef(null); // To store the canvas stream
 
   const backgrounds = ["/image/배경.jpg", "/image/bg.png", "/image/space.jpeg", "/image/trees.jpeg"];
   const [selectedBackground, setSelectedBackground] = React.useState(0);
+  let mediaRecorder = null;
+  let recordedMediaUrl = null;
+
+  const record = () => {
+    if (!canvasStreamRef.current) {
+      // Create a stream from the canvas if it doesn't exist
+      const canvasStream = c2Ref.current.captureStream(30); // Capture at 30fps
+      canvasStreamRef.current = canvasStream;
+    }
+
+    let mediaData = [];
+
+    try {
+      // 1. Use the canvas stream to create MediaRecorder
+      mediaRecorder = new MediaRecorder(canvasStreamRef.current, {
+        mimeType: "video/webm",
+      });
+
+      // 2. 전달받는 데이터를 처리하는 이벤트 핸들러 등록
+      mediaRecorder.ondataavailable = function (event) {
+        if (event.data && event.data.size > 0) {
+          mediaData.push(event.data);
+        }
+      };
+
+      // 3. 녹화 중지 이벤트 핸들러 등록
+      mediaRecorder.onstop = function () {
+        const blob = new Blob(mediaData, { type: "video/webm" });
+        recordedMediaUrl = URL.createObjectURL(blob);
+      };
+
+      // 4. 녹화 시작
+      mediaRecorder.start();
+    } catch (error) {
+      console.error("Error accessing media devices:", error);
+    }
+  };
+
+  const endRecord = () => {
+    if (mediaRecorder) {
+      // 5. 녹화 중지
+      mediaRecorder.stop();
+      mediaRecorder = null;
+    }
+  };
+
+  const download = () => {
+    if (recordedMediaUrl) {
+      const link = document.createElement("a");
+      document.body.appendChild(link);
+      // 녹화된 영상의 URL을 href 속성으로 설정
+      link.href = recordedMediaUrl;
+      // 저장할 파일명 설정
+      link.download = "video.webm";
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
   useEffect(() => {
     // Get user media (webcam stream)
     navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
@@ -71,14 +130,26 @@ const VideoProcessor = () => {
       <button onClick={() => setSelectedBackground(2)}>우주</button>
       <button onClick={() => setSelectedBackground(3)}>나무</button>
 
-      {/* <img src="/image/배경.jpg" alt=""></img> */}
-      <>
-        <canvas id="c1" ref={c1Ref} width="400" height="300" style={{ display: "none" }}></canvas>
-        <StContainer>
-          <StBgImg style={{ backgroundImage: `url(${backgrounds[selectedBackground]})` }} />
-          <StCanvas id="c2" ref={c2Ref} width="400" height="300"></StCanvas>
-        </StContainer>
-      </>
+      <canvas id="c1" ref={c1Ref} width="400" height="300" style={{ display: "none" }}></canvas>
+      <StContainer>
+        {/* <StBgImg  /> */}
+        <StCanvas
+          id="c2"
+          ref={c2Ref}
+          width="400"
+          height="300"
+          style={{ backgroundImage: `url(${backgrounds[selectedBackground]})` }}
+        ></StCanvas>
+      </StContainer>
+      <button onClick={record}>녹화시작</button>
+      <button onClick={endRecord}>녹화종료</button>
+      <button onClick={download}>다운로드</button>
+
+      {recordedMediaUrl && (
+        <video controls>
+          <source src={recordedMediaUrl} type="video/webm" />
+        </video>
+      )}
     </>
   );
 };
@@ -92,13 +163,16 @@ const StBgImg = styled.div`
   background-size: cover;
   z-index: 1;
 `;
+
 const StContainer = styled.div`
   width: 400px;
   height: 300px;
 `;
+
 const StCanvas = styled.canvas`
   position: absolute;
   z-index: 2;
   width: 400px;
   height: 300px;
+  background-size: cover;
 `;
