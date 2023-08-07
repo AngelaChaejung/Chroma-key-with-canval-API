@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { styled } from "styled-components";
+import ScreenRecorder from "./ScreenRecorder";
 
 const VideoProcessor = () => {
   const videoRef = useRef(null);
@@ -89,7 +90,7 @@ const VideoProcessor = () => {
       const data = imageData.data;
 
       const chromaKeyColor = [47, 178, 155]; // 크로마키 색상 (RGB 값 47, 178, 155로 조정완료. 이 값은 이용하는 크로마키 배경에 따라 변경해야함)
-      const tolerance = 40; // 허용 오차 범위
+      const tolerance = 60; // 허용 오차 범위
 
       for (let i = 0; i < data.length; i += 4) {
         const red = data[i];
@@ -124,12 +125,19 @@ const VideoProcessor = () => {
 
   return (
     <>
-      <video width={"400px"} id="video" ref={videoRef} autoPlay controls crossOrigin="anonymous"></video>
+      <video
+        width={"400px"}
+        id="video"
+        ref={videoRef}
+        autoPlay
+        controls
+        crossOrigin="anonymous"
+        style={{ display: "none" }}
+      ></video>
       <button onClick={() => setSelectedBackground(0)}>분홍색</button>
       <button onClick={() => setSelectedBackground(1)}>바다</button>
       <button onClick={() => setSelectedBackground(2)}>우주</button>
       <button onClick={() => setSelectedBackground(3)}>나무</button>
-
       <canvas id="c1" ref={c1Ref} width="400" height="300" style={{ display: "none" }}></canvas>
       <StContainer>
         {/* <StBgImg  /> */}
@@ -144,12 +152,12 @@ const VideoProcessor = () => {
       <button onClick={record}>녹화시작</button>
       <button onClick={endRecord}>녹화종료</button>
       <button onClick={download}>다운로드</button>
-
       {recordedMediaUrl && (
         <video controls>
           <source src={recordedMediaUrl} type="video/webm" />
         </video>
       )}
+      <ScreenRecorder />
     </>
   );
 };
