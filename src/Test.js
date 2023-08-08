@@ -1,8 +1,17 @@
 import React, { useEffect, useRef } from "react";
 import { styled } from "styled-components";
-import ScreenRecorder from "./ScreenRecorder";
 
 const VideoProcessor = () => {
+  const openPopup = () => {
+    const popupWidth = 300;
+    const popupHeight = 200;
+    const left = window.innerWidth - popupWidth;
+    const top = window.innerHeight - popupHeight;
+
+    const options = `width=${popupWidth},height=${popupHeight},left=${left},top=${top},`;
+
+    window.open("/record", "popup", options);
+  };
   const videoRef = useRef(null);
   const c1Ref = useRef(null);
   const c2Ref = useRef(null);
@@ -56,7 +65,7 @@ const VideoProcessor = () => {
     }
   };
 
-  const download = () => {
+  const download1 = () => {
     if (recordedMediaUrl) {
       const link = document.createElement("a");
       document.body.appendChild(link);
@@ -69,6 +78,15 @@ const VideoProcessor = () => {
     }
   };
 
+  const download = () => {
+    const a = document.createElement("a");
+    a.style.display = "none";
+    a.href = localStorage.getItem("recordedVideo");
+    a.download = "recorded-video.webm";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
   useEffect(() => {
     // Get user media (webcam stream)
     navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
@@ -149,28 +167,29 @@ const VideoProcessor = () => {
           style={{ backgroundImage: `url(${backgrounds[selectedBackground]})` }}
         ></StCanvas>
       </StContainer>
-      <button onClick={record}>녹화시작</button>
+      {/* <button onClick={record}>녹화시작</button>
       <button onClick={endRecord}>녹화종료</button>
-      <button onClick={download}>다운로드</button>
+      <button onClick={download}>다운로드</button> */}
       {recordedMediaUrl && (
         <video controls>
           <source src={recordedMediaUrl} type="video/webm" />
         </video>
       )}
-      <ScreenRecorder />
+      <button onClick={openPopup}>녹화</button>
+      <button onClick={download}>다운로드</button>
     </>
   );
 };
 
 export default VideoProcessor;
 
-const StBgImg = styled.div`
-  position: absolute;
-  width: 400px;
-  height: 300px;
-  background-size: cover;
-  z-index: 1;
-`;
+// const StBgImg = styled.div`
+//   position: absolute;
+//   width: 400px;
+//   height: 300px;
+//   background-size: cover;
+//   z-index: 1;
+// `;
 
 const StContainer = styled.div`
   width: 400px;

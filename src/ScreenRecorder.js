@@ -9,7 +9,13 @@ function ScreenRecorder() {
 
   const startRecording = async () => {
     try {
-      const mediaStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      const mediaStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        //  {
+        //   mediaSource: "screen",
+        // },
+      });
+
       const mediaRecorder = new MediaRecorder(mediaStream);
 
       mediaRecorder.ondataavailable = (event) => {
@@ -24,6 +30,7 @@ function ScreenRecorder() {
         const recordedBlob = new Blob(mediaStreamRef.current.recordedChunks, { type: "video/webm" });
         const videoUrl = URL.createObjectURL(recordedBlob);
         setVideoUrl(videoUrl);
+        localStorage.setItem("recordedVideo", videoUrl); // 비디오가 저장된 후에 localStorage에 저장
       };
 
       mediaStreamRef.current = {
@@ -61,24 +68,24 @@ function ScreenRecorder() {
   return (
     <div>
       <button onClick={startRecording} disabled={recording}>
-        Start Recording
+        화면녹화시작
       </button>
       <button onClick={stopRecording} disabled={!recording}>
-        Stop Recording
+        화면녹화종료
       </button>
-      {videoUrl && (
+      {/* {videoUrl && (
         <div>
           <video
             ref={videoRef}
             controls
             src={videoUrl}
-            style={{ display: "block", marginTop: "10px" }}
+            style={{ display: "none", marginTop: "10px" }}
             width="400"
             height="300"
           />
           <button onClick={downloadVideo}>Download Video</button>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
